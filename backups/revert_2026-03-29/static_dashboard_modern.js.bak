@@ -1,0 +1,29 @@
+// Dashboard Modern JS - Chart setup and interactions
+document.addEventListener('DOMContentLoaded', function(){
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+});  document.querySelectorAll('.btn').forEach((b)=>{b.addEventListener('mouseover',()=>b.style.transform='scale(1.02)');b.addEventListener('mouseout',()=>b.style.transform='scale(1)')});  // small polishing: clickable skill analyze  if(uploadBtn){uploadBtn.addEventListener('click',()=>{alert('Upload & Analyze action — integrate with backend to complete.');});}  const uploadBtn = document.getElementById('uploadAnalyze');  // Button handlers  });    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{color:'#9fb6d9'}},y:{grid:{color:'rgba(255,255,255,0.03)'},ticks:{color:'#9fb6d9'}}}}    data:{labels:labels,datasets:[{label:'ATS',data:data,fill:true,tension:0.35,borderColor:'#7c3aed',backgroundColor:'rgba(124,58,237,0.12)',pointBackgroundColor:'#3b82f6',pointRadius:4}]},    type:'line',  new Chart(trendCtx,{  const data = [55,70,65,78,88];  const labels = ['V1','V2','V3','V4','V5'];  const trendCtx = document.getElementById('trendChart').getContext('2d');  // Trend chart (line)  });n  // Readiness ring (doughnut)
+n  const readinessCtx = document.getElementById('readinessRing').getContext('2d');
+n  const readinessVal = 88; // sample
+n  new Chart(readinessCtx, {
+n    type: 'doughnut',
+n    data: {datasets:[{data:[readinessVal,100-readinessVal],backgroundColor:['#10b981','rgba(255,255,255,0.06)'],borderWidth:0}]},
+n    options:{cutout:'72%',responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}

@@ -1,0 +1,1471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Resumes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+
+        /* ==================== MAIN OPTIONS ==================== */
+        .main-options {
+            margin-top: 30px;
+            padding-left: 30px;
+        }
+
+        .option-item {
+            padding: 12px 0;
+            cursor: pointer;
+            font-size: 16px;
+            color: #e0e0e0;
+            border-bottom: 1px solid #4a5568;
+            transition: color 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .option-item:hover {
+            color: #ffffff;
+        }
+
+        .option-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        /* ==================== DASHBOARD CONTENT ==================== */
+        .dashboard-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 40px;
+            padding-right: 40px;
+        }
+
+        .dashboard-header {
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .logout-btn {
+            display: block;
+            width: 100%;
+            padding: 12px 15px;
+            background: #dc3545;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        /* ==================== MODERN WHITE THEME MODALS ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 0;
+            width: 90%;
+            max-width: 450px;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            color: #333333;
+        }
+
+        .upload-modal-content {
+            max-width: 480px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 24px 24px 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .modal-title-section {
+            flex: 1;
+        }
+
+        .modal-title {
+            margin: 0 0 4px 0;
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .modal-subtitle {
+            margin: 0;
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #9ca3af;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            transition: all 0.2s;
+            margin-left: 16px;
+        }
+
+        .close-btn:hover {
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* ==================== MODERN DRAG & DROP UPLOAD ==================== */
+        .upload-drop-zone {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 40px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: #fafafa;
+            margin-bottom: 24px;
+        }
+
+        .upload-drop-zone:hover {
+            border-color: #9ca3af;
+            background-color: #f9fafb;
+        }
+
+        .upload-drop-zone.dragover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .upload-link {
+            color: #3b82f6;
+            cursor: pointer;
+            font-weight: 500;
+            text-decoration: underline;
+        }
+
+        .upload-link:hover {
+            color: #2563eb;
+        }
+
+        .upload-supported {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .selected-file {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #059669;
+            font-weight: 500;
+        }
+
+        /* ==================== MODERN BUTTONS ==================== */
+        .upload-btn-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .btn-cancel {
+            padding: 8px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            background-color: #ffffff;
+            color: #6b7280;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-cancel:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .btn-upload {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            background-color: #f97316;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-upload:hover:not(:disabled) {
+            background-color: #ea580c;
+        }
+
+        .btn-upload:disabled {
+            background-color: #fed7aa;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        /* ==================== RESUME LIST IN MODAL ==================== */
+        .resume-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .resume-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            background-color: #2d3748;
+            word-wrap: break-word;
+        }
+
+        .resume-item-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .resume-item-name {
+            font-weight: 500;
+            color: #e0e0e0;
+            margin-bottom: 2px;
+            word-wrap: break-word;
+        }
+
+        .resume-item-meta {
+            font-size: 12px;
+            color: #a0aec0;
+            word-wrap: break-word;
+        }
+
+        .resume-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-view {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: #218838;
+        }
+
+        .btn-analyze {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-analyze:hover {
+            background-color: #138496;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        /* ==================== MESSAGES ==================== */
+        .message {
+            padding: 12px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            display: none;
+            word-wrap: break-word;
+        }
+
+        .message.success {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .message.error {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        /* ==================== EMPTY STATE ==================== */
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: #a0aec0;
+        }
+
+        .empty-state-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            margin-bottom: 5px;
+            color: #e0e0e0;
+        }
+
+        .empty-state-subtext {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        /* ==================== ANALYSIS MODAL ==================== */
+        .analysis-score {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .analysis-section {
+            background: #2d3748;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+        }
+
+        .analysis-section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .analysis-list li {
+            padding: 5px 0;
+            color: #a0aec0;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .missing-skill-tag {
+            background: #dc3545;
+        }
+        .file-input-wrapper {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .file-input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .file-input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        .file-input-group input[type="file"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px dashed #007bff;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            transition: background-color 0.3s;
+        }
+
+        .file-input-group input[type="file"]:hover {
+            background-color: #e9ecef;
+        }
+
+        /* Selected file name display */
+        .file-info {
+            display: none;
+            padding: 12px;
+            background-color: #e2f0ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #0056b3;
+        }
+
+        .file-info.show {
+            display: block;
+        }
+
+        .file-info strong {
+            font-weight: 600;
+        }
+
+        /* Upload buttons */
+        .upload-btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .upload-btn, .clear-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .upload-btn {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .upload-btn:hover:not(:disabled) {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .upload-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .clear-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .clear-btn:hover {
+            background-color: #545b62;
+        }
+
+        /* Loading spinner animation */
+        .loading-spinner {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Message display (success/error) */
+        .message {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            display: none;
+            font-weight: 500;
+            border-left: 4px solid transparent;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+            display: block;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+            display: block;
+        }
+
+        /* Extracted text container */
+        .extracted-text-container {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+            border: 1px solid #dee2e6;
+        }
+
+        .extracted-text-container.show {
+            display: block;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .extracted-text-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* IMPORTANT: white-space: pre-wrap preserves formatting from extracted text */
+        .extracted-text-content {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            max-height: 500px;
+            overflow-y: auto;
+            white-space: pre-wrap;      /* Preserve line breaks and spaces */
+            word-wrap: break-word;       /* Break long words */
+            color: #333;
+            line-height: 1.6;
+            font-size: 14px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* ==================== RESUME LIST SECTION ==================== */
+        .resumes-list-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .resumes-list-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .resume-count-badge {
+            background-color: #007bff;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Resume list items */
+        .resume-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .resume-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            background-color: #f8f9fa;
+        }
+
+        .resume-item:hover {
+            background-color: #e9ecef;
+            border-color: #007bff;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+        }
+
+        .resume-item-info {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .resume-item-icon {
+            font-size: 24px;
+        }
+
+        .resume-item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .resume-item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .resume-item-meta {
+            font-size: 13px;
+            color: #666;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .resume-item-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .resume-item-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-view {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-analyze {
+            background-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-analyze:hover {
+            background-color: #138496;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+        }
+
+        .btn-delete:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Empty state message */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .empty-state-subtext {
+            font-size: 14px;
+            color: #999;
+        }
+
+        /* ==================== ANALYSIS RESULTS SECTION ==================== */
+        .analysis-container {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            display: none;
+        }
+
+        .analysis-container.show {
+            display: block;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        .analysis-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-content {
+            display: grid;
+            gap: 20px;
+        }
+
+        .analysis-score {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            color: white;
+        }
+
+        .score-number {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .score-label {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .analysis-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid #007bff;
+        }
+
+        .analysis-section-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .analysis-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .analysis-list li {
+            padding: 5px 0;
+            color: #555;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #28a745;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        .missing-skill-tag {
+            background: #dc3545;
+        }
+
+        /* Responsive design for mobile */
+        @media (max-width: 768px) {
+            .nav-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .nav-btn {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .file-input-wrapper {
+                flex-direction: column;
+            }
+
+            .file-input-group {
+                width: 100%;
+            }
+
+            .upload-btn-group {
+                flex-direction: column;
+            }
+
+            .upload-btn, .clear-btn {
+                width: 100%;
+            }
+
+            .extracted-text-content {
+                max-height: 300px;
+                font-size: 13px;
+            }
+
+            .resume-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .resume-item-actions {
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            .btn-small {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body class="dashboard">
+    <!-- Mobile menu icon -->
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-profile">
+                <div class="sidebar-photo">
+                    {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}?t={{ user.created_at.timestamp() if user.created_at else '' }}" alt="Profile Photo">
+                    {% else %}
+                    <div class="sidebar-default-photo">👤</div>
+                    {% endif %}
+                </div>
+                <div class="sidebar-name">{{ user.name or 'User' }}</div>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+                <li><a href="{{ url_for('my_resumes') }}" class="active"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+                <li><a href="{{ url_for('profile') }}"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+                <li><a href="{{ url_for('career_path') }}"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+                <li><a href="{{ url_for('skill_builder') }}"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+                <li><a href="{{ url_for('job_match_page') }}"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+            </ul>
+        </div>
+        
+        <!-- Logout button at bottom of sidebar -->
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            <!-- Page Header -->
+            <div class="dashboard-header">
+                <h1>My Resumes</h1>
+            </div>
+
+            <!-- Main Options -->
+            <div class="main-options">
+                <div class="option-item" onclick="openUploadModal()">Upload Resume</div>
+                <div class="option-item" onclick="openResumesModal()">Your Resumes</div>
+            </div>
+
+            <!-- ==================== UPLOAD MODAL ==================== -->
+            <div id="uploadModal" class="modal">
+                <div class="modal-content upload-modal-content">
+                    <div class="modal-header">
+                        <div class="modal-title-section">
+                            <h3 class="modal-title">Upload Resume</h3>
+                            <p class="modal-subtitle">Upload your resume file</p>
+                        </div>
+                        <button class="close-btn" onclick="closeModal('uploadModal')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Message Display -->
+                        <div id="uploadMessageModal" class="message"></div>
+
+                        <!-- Drag & Drop Area -->
+                        <div class="upload-drop-zone" id="uploadDropZone">
+                            <input
+                                type="file"
+                                id="resumeFileModal"
+                                accept=".pdf,.docx"
+                                style="display: none;"
+                            >
+                            <div class="upload-icon">📄</div>
+                            <div class="upload-text">
+                                Drag & drop or <span class="upload-link" onclick="document.getElementById('resumeFileModal').click()">choose file</span>
+                            </div>
+                            <div class="upload-supported">PDF, DOCX (max 5MB)</div>
+                            <div class="selected-file" id="selectedFileName" style="display: none;"></div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="upload-btn-group">
+                            <button
+                                type="button"
+                                class="btn-cancel"
+                                onclick="closeModal('uploadModal')"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                id="uploadBtnModal"
+                                class="btn-upload"
+                                type="button"
+                                disabled
+                            >
+                                Upload
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== RESUMES MODAL ==================== -->
+            <div id="resumesModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Your Resumes</h3>
+                        <button class="close-btn" onclick="closeModal('resumesModal')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Check if user has any resumes -->
+                        {% if resumes %}
+                            <ul class="resume-list">
+                                {% for resume in resumes %}
+                                <li class="resume-item">
+                                    <div class="resume-item-info">
+                                        <div class="resume-item-name">{{ resume.original_file_name }}</div>
+                                        <div class="resume-item-meta">
+                                            {{ resume.upload_date.strftime('%B %d, %Y') }} •
+                                            {% if resume.file_size >= 1024*1024 %}{{ "%.2f"|format(resume.file_size / 1024 / 1024) }} MB{% else %}{{ "%.2f"|format(resume.file_size / 1024) }} KB{% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="resume-item-actions">
+                                        <a href="{{ url_for('view_resume', resume_id=resume.id) }}" class="btn-small btn-view" target="_blank">
+                                            View
+                                        </a>
+                                        <button
+                                            class="btn-small btn-analyze"
+                                            onclick="analyzeResume({{ resume.id }})"
+                                        >
+                                            Analyze
+                                        </button>
+                                        <button
+                                            class="btn-small btn-delete"
+                                            onclick="deleteResume({{ resume.id }})"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <!-- Empty state -->
+                            <div class="empty-state">
+                                <div class="empty-state-icon">📭</div>
+                                <div class="empty-state-text">No Resumes Yet</div>
+                                <div class="empty-state-subtext">Upload your first resume to get started</div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== ANALYSIS MODAL ==================== -->
+            <div id="analysisModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Resume Analysis</h3>
+                        <button class="close-btn" onclick="closeModal('analysisModal')">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="analysisContentModal">
+                            <!-- Analysis results will be displayed here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ==================== JAVASCRIPT FOR MODAL MANAGEMENT ==================== -->
+    <script>
+        /**
+         * Modal Management Functions
+         * Functions to open/close modals and handle modal interactions
+         */
+
+        /**
+         * Open Upload Modal
+         * Shows the resume upload modal and resets the form
+         */
+        function openUploadModal() {
+            const modal = document.getElementById('uploadModal');
+            modal.classList.add('show');
+
+            // Reset form state
+            resumeFileInputModal.value = '';
+            uploadBtnModal.disabled = true;
+            selectedFileName.style.display = 'none';
+            clearMessagesModal();
+        }
+
+        /**
+         * Open Resumes Modal
+         * Shows the resumes list modal
+         */
+        function openResumesModal() {
+            const modal = document.getElementById('resumesModal');
+            modal.classList.add('show');
+        }
+
+        /**
+         * Close Modal
+         * Hides the specified modal
+         * @param {string} modalId - The ID of the modal to close
+         */
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        }
+
+        /**
+         * Close modal when clicking outside
+         */
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    modal.classList.remove('show');
+                }
+            });
+        });
+
+        /**
+         * DOM Element References for Upload Modal
+         * These are the HTML elements we need to interact with in the upload modal
+         */
+        const resumeFileInputModal = document.getElementById('resumeFileModal');
+        const uploadBtnModal = document.getElementById('uploadBtnModal');
+        const uploadMessageModal = document.getElementById('uploadMessageModal');
+        const uploadDropZone = document.getElementById('uploadDropZone');
+        const selectedFileName = document.getElementById('selectedFileName');
+
+        /**
+         * Handle File Selection in Modal
+         * Shows the selected filename and enables the upload button
+         */
+        resumeFileInputModal.addEventListener('change', function() {
+            handleFileSelection(this.files);
+        });
+
+        /**
+         * Drag and Drop Functionality
+         */
+        uploadDropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('dragover');
+        });
+
+        uploadDropZone.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+        });
+
+        uploadDropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                // Set the file to the hidden input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(files[0]);
+                resumeFileInputModal.files = dataTransfer.files;
+                handleFileSelection(files);
+            }
+        });
+
+        /**
+         * Handle file selection (from input or drag-drop)
+         */
+        function handleFileSelection(files) {
+            if (files && files[0]) {
+                const file = files[0];
+                const fileName = file.name;
+
+                // Show selected file name
+                selectedFileName.textContent = `Selected: ${fileName}`;
+                selectedFileName.style.display = 'block';
+
+                // Enable the upload button
+                uploadBtnModal.disabled = false;
+
+                // Clear any previous messages
+                clearMessagesModal();
+            }
+        }
+
+        /**
+         * Upload Resume via Fetch API (Modal Version)
+         * Sends the file to /upload_resume endpoint without page reload
+         */
+        uploadBtnModal.addEventListener('click', function(event) {
+            // IMPORTANT: Prevent default form submission and page reload
+            event.preventDefault();
+
+            // Validate file selection
+            if (!resumeFileInputModal.files || !resumeFileInputModal.files[0]) {
+                showMessageModal('Please select a file first', 'error');
+                return;
+            }
+
+            const file = resumeFileInputModal.files[0];
+            const fileName = file.name;
+            const fileExt = fileName.split('.').pop().toLowerCase();
+
+            // Validate file type (PDF or DOCX only)
+            if (!['pdf', 'docx'].includes(fileExt)) {
+                showMessageModal('❌ Only PDF and DOCX files are allowed', 'error');
+                return;
+            }
+
+            // Validate file size (5MB max)
+            const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+            if (file.size > maxSize) {
+                showMessageModal('❌ File size must be less than 5MB', 'error');
+                return;
+            }
+
+            // Create FormData object to send file
+            const formData = new FormData();
+            formData.append('resume_file', file);
+
+            // Show loading state
+            uploadBtnModal.disabled = true;
+            const originalBtnText = uploadBtnModal.textContent;
+            uploadBtnModal.innerHTML = '<span class="loading-spinner"></span>Processing...';
+
+            // Send file to backend using Fetch API
+            fetch('/upload_resume', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Restore button to normal state
+                uploadBtnModal.innerHTML = originalBtnText;
+
+                if (data.success) {
+                    // Show success message
+                    showMessageModal(`✅ ${data.message}`, 'success');
+
+                    // Close modal and reload page after 2 seconds to show new resume
+                    setTimeout(() => {
+                        closeModal('uploadModal');
+                        location.reload();
+                    }, 2000);
+                } else {
+                    // Show error message
+                    showMessageModal(`❌ ${data.error}`, 'error');
+                    // Re-enable upload button so user can try again
+                    uploadBtnModal.disabled = false;
+                }
+            })
+            .catch(error => {
+                // Handle network errors
+                uploadBtnModal.innerHTML = originalBtnText;
+                uploadBtnModal.disabled = false;
+                console.error('Error:', error);
+                showMessageModal(`❌ Error uploading file: ${error.message}`, 'error');
+            });
+        });
+
+        /**
+         * Show Message in Modal (Success or Error)
+         * Displays notifications to the user in the modal
+         * @param {string} message - The message text to display
+         * @param {string} type - 'success' or 'error'
+         */
+        function showMessageModal(message, type) {
+            uploadMessageModal.textContent = message;
+            uploadMessageModal.className = `message ${type}`;
+            uploadMessageModal.style.display = 'block';
+        }
+
+        /**
+         * Clear Messages in Modal
+         * Removes any displayed messages
+         */
+        function clearMessagesModal() {
+            uploadMessageModal.textContent = '';
+            uploadMessageModal.className = 'message';
+            uploadMessageModal.style.display = 'none';
+        }
+
+        /**
+         * Delete Resume
+         * Removes a resume from the database
+         * @param {number} resumeId - The ID of the resume to delete
+         */
+        function deleteResume(resumeId) {
+            // Confirm before deleting
+            if (!confirm('Are you sure you want to delete this resume? This action cannot be undone.')) {
+                return;
+            }
+
+            // Send delete request to backend
+            fetch(`/delete_resume/${resumeId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message and reload
+                    alert('✅ Resume deleted successfully');
+                    location.reload();
+                } else {
+                    // Show error message
+                    alert(`❌ Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error deleting resume');
+            });
+        }
+
+        /**
+         * Analyze Resume
+         * Gets AI-like analysis of a resume and shows in modal
+         * @param {number} resumeId - The ID of the resume to analyze
+         */
+        function analyzeResume(resumeId) {
+            // Open analysis modal
+            const modal = document.getElementById('analysisModal');
+            const analysisContent = document.getElementById('analysisContentModal');
+
+            modal.classList.add('show');
+            analysisContent.innerHTML = '<div style="text-align: center; padding: 40px;"><span class="loading-spinner"></span><br>Analyzing resume...</div>';
+
+            // Send analysis request to backend
+            fetch(`/analyze_resume/${resumeId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    analysisContent.innerHTML = `<div style="color: red; text-align: center; padding: 20px;">❌ Error: ${data.error}</div>`;
+                    return;
+                }
+
+                // Display analysis results
+                displayAnalysisResults(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                analysisContent.innerHTML = '<div style="color: red; text-align: center; padding: 20px;">❌ Error analyzing resume</div>';
+            });
+        }
+
+        /**
+         * Display Analysis Results in Modal
+         * Shows the resume analysis in a formatted way
+         * @param {object} data - The analysis data from the backend
+         */
+        function displayAnalysisResults(data) {
+            const analysis = data.analysis;
+            const analysisContent = document.getElementById('analysisContentModal');
+
+            // Create HTML for analysis results
+            let html = `
+                <div class="analysis-score">
+                    <div class="score-number">${analysis.score}/100</div>
+                    <div class="score-label">Resume Score</div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-section-title">✅ Skills Found</div>
+                    <div>
+            `;
+
+            if (analysis.skills_found.length > 0) {
+                analysis.skills_found.forEach(skill => {
+                    html += `<span class="skill-tag">${skill}</span>`;
+                });
+            } else {
+                html += '<em>No key skills detected</em>';
+            }
+
+            html += `
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-section-title">❌ Missing Skills</div>
+                    <div>
+            `;
+
+            if (analysis.missing_skills.length > 0) {
+                analysis.missing_skills.forEach(skill => {
+                    html += `<span class="skill-tag missing-skill-tag">${skill}</span>`;
+                });
+            } else {
+                html += '<em>All key skills detected!</em>';
+            }
+
+            html += `
+                    </div>
+                </div>
+
+                <div class="analysis-section">
+                    <div class="analysis-section-title">💡 Suggestions for Improvement</div>
+                    <ul class="analysis-list">
+            `;
+
+            if (analysis.suggestions.length > 0) {
+                analysis.suggestions.forEach(suggestion => {
+                    html += `<li>• ${suggestion}</li>`;
+                });
+            } else {
+                html += '<li>• Your resume looks great! Keep up the good work.</li>';
+            }
+
+            html += `
+                    </ul>
+                </div>
+            `;
+
+            analysisContent.innerHTML = html;
+        }
+
+        /**
+         * Toggle Sidebar (Mobile Responsive)
+         * Shows/hides the sidebar on mobile devices
+         */
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+    </script>
+</body>
+</html>

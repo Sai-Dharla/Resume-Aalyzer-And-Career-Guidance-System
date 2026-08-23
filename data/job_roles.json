@@ -1,0 +1,98 @@
+{
+  "Junior Software Developer": {
+    "critical": ["Python/Java", "Git", "SQL", "OOP", "Problem Solving"],
+    "recommended": ["HTML/CSS", "JavaScript", "Unit Testing", "REST API", "Linux"],
+    "bonus": ["Docker", "CI/CD", "Microservices", "Agile"],
+    "years_experience": "0-2",
+    "salary_range": "$60k-$80k",
+    "learning_time": 16
+  },
+  "Senior Software Engineer": {
+    "critical": ["System Design", "Architecture", "Leadership", "Advanced OOP", "Performance Optimization"],
+    "recommended": ["Microservices", "Cloud Architecture", "DevOps", "Team Management", "Code Review"],
+    "bonus": ["Machine Learning", "Blockchain", "Advanced DevOps", "Technical Writing"],
+    "years_experience": "5+",
+    "salary_range": "$120k-$180k",
+    "learning_time": 8
+  },
+  "Full Stack Developer": {
+    "critical": ["JavaScript", "React/Vue", "Node.js", "SQL/MongoDB", "REST API"],
+    "recommended": ["Docker", "Git", "NoSQL", "Authentication", "CSS/HTML"],
+    "bonus": ["GraphQL", "Microservices", "AWS", "TypeScript"],
+    "years_experience": "2-4",
+    "salary_range": "$80k-$120k",
+    "learning_time": 20
+  },
+  "Frontend Developer": {
+    "critical": ["JavaScript", "React/Vue/Angular", "CSS", "HTML", "Responsive Design"],
+    "recommended": ["TypeScript", "State Management", "Testing", "Git", "UI/UX Basics"],
+    "bonus": ["Web Performance", "Accessibility", "Animation", "Webpack"],
+    "years_experience": "1-3",
+    "salary_range": "$70k-$110k",
+    "learning_time": 18
+  },
+  "Backend Developer": {
+    "critical": ["Java/Python/Go", "SQL", "REST API Design", "Database Design", "System Design"],
+    "recommended": ["Microservices", "Docker", "Caching", "Message Queues", "Testing"],
+    "bonus": ["GraphQL", "Authentication", "Performance Tuning", "Kubernetes"],
+    "years_experience": "2-4",
+    "salary_range": "$80k-$120k",
+    "learning_time": 18
+  },
+  "Data Scientist": {
+    "critical": ["Python", "Machine Learning", "Statistics", "Data Analysis", "SQL"],
+    "recommended": ["Deep Learning", "Pandas", "NumPy", "Scikit-learn", "Data Visualization"],
+    "bonus": ["TensorFlow", "NLP", "Computer Vision", "Big Data"],
+    "years_experience": "1-3",
+    "salary_range": "$80k-$130k",
+    "learning_time": 24
+  },
+  "DevOps Engineer": {
+    "critical": ["Linux", "Docker", "Kubernetes", "CI/CD", "Git", "Cloud AWS/Azure"],
+    "recommended": ["Terraform/Infrastructure as Code", "Monitoring", "Python/Shell Scripts", "Networking"],
+    "bonus": ["Advanced Kubernetes", "Security", "ArgoCD", "Prometheus"],
+    "years_experience": "2-4",
+    "salary_range": "$90k-$140k",
+    "learning_time": 20
+  },
+  "Cloud Architect": {
+    "critical": ["AWS/Azure/GCP", "Docker", "Kubernetes", "Networking", "Security"],
+    "recommended": ["Terraform", "Storage Solutions", "Databases", "Disaster Recovery", "Cost Optimization"],
+    "bonus": ["Multi-cloud", "Serverless", "Advanced Networking", "AIOps"],
+    "years_experience": "5+",
+    "salary_range": "$130k-$180k",
+    "learning_time": 12
+  },
+  "QA Automation Engineer": {
+    "critical": ["Test Automation", "Selenium", "SQL", "JavaScript/Python", "Test Frameworks"],
+    "recommended": ["API Testing", "CI/CD Integration", "Git", "Reporting", "Performance Testing"],
+    "bonus": ["Mobile Testing", "Advanced Selenium", "Blue-green Deployment", "Load Testing"],
+    "years_experience": "1-3",
+    "salary_range": "$65k-$105k",
+    "learning_time": 16
+  },
+  "Mobile App Developer": {
+    "critical": ["Swift/Kotlin", "Mobile UI/UX", "REST API", "Git", "Testing"],
+    "recommended": ["Firebase", "Navigation", "Performance Optimization", "API Integration", "Mobile Design"],
+    "bonus": ["Cross-platform Framework", "Push Notifications", "Advanced Animation", "Analytics"],
+    "years_experience": "1-3",
+    "salary_range": "$75k-$120k",
+    "learning_time": 20
+  },
+  "Solutions Architect": {
+    "critical": ["System Design", "Architecture", "Cloud Platforms", "Communication", "Project Management"],
+    "recommended": ["Microservices", "Security", "Scalability", "Cost Optimization", "Stakeholder Management"],
+    "bonus": ["Emerging Technologies", "Enterprise Design", "Multi-cloud", "Technical Leadership"],
+    "years_experience": "5+",
+    "salary_range": "$120k-$170k",
+    "learning_time": 10
+  },
+  "Security Engineer": {
+    "critical": ["Cybersecurity Fundamentals", "Linux", "Networking", "Encryption", "Vulnerability Assessment"],
+    "recommended": ["Penetration Testing", "Cloud Security", "Compliance", "Incident Response", "Security Tools"],
+    "bonus": ["Advanced Cryptography", "Threat Intelligence", "Security Automation", "DevSecOps"],
+    "years_experience": "3-5",
+    "salary_range": "$100k-$150k",
+    "learning_time": 18
+  }
+}

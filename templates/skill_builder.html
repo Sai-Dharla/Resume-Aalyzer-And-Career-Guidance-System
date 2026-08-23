@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if skill %}Skill Builder - {{ skill.title() }}{% else %}Skill Builder{% endif %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard">
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-profile">
+                <div class="sidebar-photo">
+                    {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}?t={{ user.created_at.timestamp() if user.created_at else '' }}" alt="Profile Photo">
+                    {% else %}
+                    <div class="sidebar-default-photo">👤</div>
+                    {% endif %}
+                </div>
+                <div class="sidebar-name">{{ user.name or 'User' }}</div>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+                <li><a href="{{ url_for('my_resumes') }}"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+                <li><a href="{{ url_for('profile') }}"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+                <li><a href="{{ url_for('career_path') }}"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+                <li><a href="{{ url_for('skill_builder') }}" class="active"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+                <li><a href="{{ url_for('job_match_page') }}"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            {% if skill %}
+            <div class="dashboard-header">
+                <h1>Skill Builder: {{ skill.title() }}</h1>
+                <p>Master {{ skill.title() }} with a structured learning path</p>
+            </div>
+            {% else %}
+            <div class="dashboard-header">
+                <h1>Skill Builder</h1>
+                <p>Choose a skill to start your learning path</p>
+            </div>
+            {% endif %}
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="messages" style="margin-bottom: 20px;">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            {% if skill %}
+            <div class="skill-builder-grid">
+                <!-- Overview Card -->
+                <div class="dashboard-card skill-overview-card">
+                    <h3>📋 Overview</h3>
+                    <div class="skill-info">
+                        <div class="skill-info-item">
+                            <span class="label">Duration:</span>
+                            <span class="value">{{ skill_details.duration }}</span>
+                        </div>
+                        <div class="skill-info-item">
+                            <span class="label">Level:</span>
+                            <span class="value">{{ skill_details.level }}</span>
+                        </div>
+                    </div>
+                    <p style="margin-top: 16px; color: #cbd5e0; line-height: 1.6;">
+                        This skill roadmap provides a structured path to mastery. Follow the resources, complete projects, and track your progress.
+                    </p>
+                </div>
+
+                <!-- Resources Card -->
+                <div class="dashboard-card skill-section-card">
+                    <h3>📚 Learning Resources</h3>
+                    <div class="skill-section-content">
+                        <p style="color: #a0aec0; margin-bottom: 12px;">Start with these trusted resources:</p>
+                        <ul class="skill-list">
+                            {% for resource in skill_details.resources %}
+                            <li>
+                                <span class="list-icon">✓</span>
+                                <span>{{ resource }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Projects Card -->
+                <div class="dashboard-card skill-section-card">
+                    <h3>🚀 Practice Projects</h3>
+                    <div class="skill-section-content">
+                        <p style="color: #a0aec0; margin-bottom: 12px;">Build real projects to reinforce learning:</p>
+                        <ul class="skill-list">
+                            {% for project in skill_details.projects %}
+                            <li>
+                                <span class="list-icon">→</span>
+                                <span>{{ project }}</span>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Progress Card -->
+                <div class="dashboard-card skill-progress-card">
+                    <h3>📈 Your Progress</h3>
+                    <div class="progress-tracker">
+                        <div class="progress-item">
+                            <label>Learning Resources Completed</label>
+                            <div class="checkbox-list">
+                                {% for resource in skill_details.resources %}
+                                <div class="checkbox-item">
+                                    <input
+                                        type="checkbox"
+                                        id="resource_{{ loop.index }}_{{ skill|replace(' ', '-') }}"
+                                        class="progress-check"
+                                        data-key="{{ skill|replace(' ', '-') }}-resource-{{ loop.index }}"
+                                    >
+                                    <label for="resource_{{ loop.index }}_{{ skill|replace(' ', '-') }}" style="color: #cbd5e0;">{{ resource }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="progress-item" style="margin-top: 16px;">
+                            <label>Projects Completed</label>
+                            <div class="checkbox-list">
+                                {% for project in skill_details.projects %}
+                                <div class="checkbox-item">
+                                    <input
+                                        type="checkbox"
+                                        id="project_{{ loop.index }}_{{ skill|replace(' ', '-') }}"
+                                        class="progress-check"
+                                        data-key="{{ skill|replace(' ', '-') }}-project-{{ loop.index }}"
+                                    >
+                                    <label for="project_{{ loop.index }}_{{ skill|replace(' ', '-') }}" style="color: #cbd5e0;">{{ project }}</label>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            <div class="skill-search-wrap">
+                <input
+                    type="text"
+                    id="skillSearch"
+                    class="skill-search-input"
+                    placeholder="Search skills..."
+                    aria-label="Search skills"
+                >
+                <p id="skillSearchMeta" class="skill-search-meta">Showing {{ all_skills|length }} skills</p>
+            </div>
+
+            <div class="skill-catalog-grid">
+                {% for item in all_skills %}
+                <a
+                    href="{{ url_for('skill_builder', skill=item.name) }}"
+                    class="dashboard-card skill-catalog-card skill-card"
+                    data-skill="{{ item.name|lower }}"
+                    data-title="{{ item.title|lower }}"
+                    data-duration="{{ item.duration|lower }}"
+                >
+                    <div class="skill-catalog-header">
+                        <h3>{{ item.name.title() }}</h3>
+                        <span class="skill-badge">{{ item.duration }}</span>
+                    </div>
+                    <p class="skill-catalog-title">{{ item.title }}</p>
+                    <p class="skill-catalog-project"><strong>Project idea:</strong> {{ item.project }}</p>
+                    <span class="card-action skill-catalog-action">Explore {{ item.name.title() }}</span>
+                </a>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Navigation -->
+            <div class="action-links">
+                {% if skill %}
+                <a href="{{ url_for('career_path') }}" class="card-action">← Back to Career Path</a>
+                <a href="{{ url_for('skill_builder') }}" class="card-action card-action-secondary">View All Skills</a>
+                {% else %}
+                <a href="{{ url_for('career_path') }}" class="card-action">← Back to Career Path</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        {% if skill %}
+        // Restore saved progress on page load and save updates on change.
+        window.addEventListener('load', function() {
+            const progressCheckboxes = document.querySelectorAll('.progress-check[data-key]');
+
+            progressCheckboxes.forEach((checkbox) => {
+                const storageKey = `skill_progress_${checkbox.dataset.key}`;
+                const savedValue = localStorage.getItem(storageKey);
+
+                if (savedValue !== null) {
+                    checkbox.checked = savedValue === 'true';
+                }
+
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(storageKey, checkbox.checked);
+                });
+            });
+        });
+        {% endif %}
+
+        // Search/filter for all-skills mode
+        const skillSearchInput = document.getElementById('skillSearch');
+        if (skillSearchInput) {
+            const skillCards = Array.from(document.querySelectorAll('.skill-card'));
+            const meta = document.getElementById('skillSearchMeta');
+
+            const applySkillFilter = () => {
+                const query = skillSearchInput.value.trim().toLowerCase();
+                let visibleCount = 0;
+
+                skillCards.forEach((card) => {
+                    const haystack = [
+                        card.dataset.skill || '',
+                        card.dataset.title || '',
+                        card.dataset.duration || ''
+                    ].join(' ');
+
+                    const match = query === '' || haystack.includes(query);
+                    card.style.display = match ? '' : 'none';
+                    if (match) {
+                        visibleCount += 1;
+                    }
+                });
+
+                if (meta) {
+                    meta.textContent = `Showing ${visibleCount} of ${skillCards.length} skills`;
+                }
+            };
+
+            skillSearchInput.addEventListener('input', applySkillFilter);
+            applySkillFilter();
+        }
+    </script>
+</body>
+</html>

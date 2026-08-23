@@ -1,0 +1,25 @@
+// Initialize readiness doughnut and ATS bar chart using Chart.js
+document.addEventListener('DOMContentLoaded',function(){
+  // Readiness doughnut (60%)
+  const ctxR = document.getElementById('readinessDoughnut').getContext('2d');
+  new Chart(ctxR,{
+    type:'doughnut',
+    data:{datasets:[{data:[60,40],backgroundColor:['#00ffa6','#182533'],hoverBackgroundColor:['#00ffa6','#182533'],borderWidth:0}]},
+    options:{cutout:'70%',responsive:true,maintainAspectRatio:true,plugins:{legend:{display:false},tooltip:{enabled:false}}}
+  });
+
+  // ATS Bar chart (Completed, Remaining, Progress %)
+  const ctxB = document.getElementById('atsBarChart').getContext('2d');
+  new Chart(ctxB,{
+    type:'bar',
+    data:{labels:['Completed','Remaining','Progress %'],datasets:[{label:'ATS',data:[0,4,0],backgroundColor:['#2d9bf0','#ef4b4b','#2d9bf0'],borderRadius:6,maxBarThickness:140}]},
+    options:{scales:{y:{beginAtZero:true,grid:{color:'rgba(255,255,255,0.04)'},ticks:{color:'#9fb6d9'}} ,x:{grid:{display:false},ticks:{color:'#9fb6d9'}}},plugins:{legend:{display:false},tooltip:{mode:'index',intersect:false}},responsive:true,maintainAspectRatio:false}
+  });
+
+  // Upload button — placeholder
+  document.querySelectorAll('.btn-primary.outline').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      alert('Upload & Analyze Resume — UI placeholder');
+    });
+  });
+});

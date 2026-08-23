@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Setup Profile</h1>
+            <form method="post">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" value="{{ user.name or '' }}" required>
+
+                <label for="phone">Phone Number</label>
+                <input type="text" id="phone" name="phone" value="{{ user.phone or '' }}" required>
+
+                <label for="job_role">Target Job Role</label>
+                <input type="text" id="job_role" name="job_role" value="{{ user.job_role or '' }}" required>
+
+                <button type="submit">Save Profile</button>
+            </form>
+            <div class="links">
+                <a href="{{ url_for('dashboard') }}">Skip for now (go to dashboard)</a>
+            </div>
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="messages">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+</body>
+</html>

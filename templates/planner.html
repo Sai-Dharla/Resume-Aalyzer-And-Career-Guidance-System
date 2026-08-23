@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Planner</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard">
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-profile">
+                <div class="sidebar-photo">
+                    {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}?t={{ user.created_at.timestamp() if user.created_at else '' }}" alt="Profile Photo">
+                    {% else %}
+                    <div class="sidebar-default-photo">👤</div>
+                    {% endif %}
+                </div>
+                <div class="sidebar-name">{{ user.name or 'User' }}</div>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+                <li><a href="{{ url_for('my_resumes') }}"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+                <li><a href="{{ url_for('profile') }}"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+                <li><a href="{{ url_for('career_path') }}"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+                <li><a href="{{ url_for('skill_builder') }}"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+                <li><a href="{{ url_for('planner') }}" class="active"><span class="icon">🗓️</span><span class="text">Daily Planner</span></a></li>
+                <li><a href="{{ url_for('job_match_page') }}"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>Daily Planner</h1>
+                <p>Target Role: {{ target_role.title() if target_role else 'Not selected' }} | Total Days: {{ total_days }} | Total Weeks: {{ total_weeks }}</p>
+            </div>
+
+            <div class="dashboard-cards planner-metrics">
+                <div class="dashboard-card analytics-card">
+                    <h3>Completed Tasks</h3>
+                    <p class="analytics-value" id="plannerCompleted">0</p>
+                </div>
+                <div class="dashboard-card analytics-card">
+                    <h3>Remaining Tasks</h3>
+                    <p class="analytics-value" id="plannerRemaining">{{ total_days }}</p>
+                </div>
+                <div class="dashboard-card analytics-card">
+                    <h3>Progress %</h3>
+                    <p class="analytics-value" id="plannerProgress">0%</p>
+                </div>
+            </div>
+
+            {% if daily_plan %}
+            <div id="plannerGrid">
+                {% for week, tasks in weekly_plan|dictsort %}
+                <section class="planner-week-section">
+                    <div class="planner-week-header">
+                        <h2>Week {{ week }}</h2>
+                        <span class="planner-week-count">{{ tasks|length }} tasks</span>
+                    </div>
+
+                    <div class="planner-grid">
+                        {% for item in tasks %}
+                        <div class="dashboard-card planner-day-card">
+                            <div class="planner-day-header">
+                                <h3>Day {{ item.day }}</h3>
+                                <span class="planner-tag">{{ item.skill.title() }}</span>
+                            </div>
+                            <p class="planner-task">{{ item.task }}</p>
+                            <div class="checkbox-item planner-checkbox-item">
+                                <input
+                                    type="checkbox"
+                                    id="planner_day_{{ item.day }}"
+                                    class="planner-check"
+                                    data-key="planner-day-{{ item.day }}-{{ item.skill|replace(' ', '-') }}"
+                                >
+                                <label for="planner_day_{{ item.day }}">Mark complete</label>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                </section>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="dashboard-card">
+                <p>No daily plan available yet. Run Job Match first to generate your roadmap.</p>
+            </div>
+            {% endif %}
+
+            <div class="action-links">
+                <a href="{{ url_for('career_path') }}" class="card-action">← Back to Career Path</a>
+                <a href="{{ url_for('skill_builder') }}" class="card-action card-action-secondary">Open Skill Builder</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        (function setupPlannerProgress() {
+            const checkboxes = Array.from(document.querySelectorAll('.planner-check[data-key]'));
+            const completedEl = document.getElementById('plannerCompleted');
+            const remainingEl = document.getElementById('plannerRemaining');
+            const progressEl = document.getElementById('plannerProgress');
+
+            const refreshPlannerMetrics = () => {
+                const total = checkboxes.length;
+                const completed = checkboxes.filter((cb) => cb.checked).length;
+                const remaining = Math.max(total - completed, 0);
+                const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                if (completedEl) completedEl.textContent = String(completed);
+                if (remainingEl) remainingEl.textContent = String(remaining);
+                if (progressEl) progressEl.textContent = `${percent}%`;
+            };
+
+            checkboxes.forEach((checkbox) => {
+                const key = `planner_progress_${checkbox.dataset.key}`;
+                const saved = localStorage.getItem(key);
+                if (saved !== null) {
+                    checkbox.checked = saved === 'true';
+                }
+
+                checkbox.addEventListener('change', function() {
+                    localStorage.setItem(key, checkbox.checked);
+                    refreshPlannerMetrics();
+                });
+            });
+
+            refreshPlannerMetrics();
+        })();
+    </script>
+</body>
+</html>

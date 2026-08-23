@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Dashboard — Modern</title>
+    <link rel="stylesheet" href="../static/style_dashboard.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="dash-root">
+  <aside class="sidebar">
+    <div class="profile">
+      <div class="avatar">👤</div>
+      <div class="name">{{ user.name if user and user.name else 'User' }}</div>
+    </div>
+
+    <nav class="menu">
+      <a class="menu-item active">Dashboard</a>
+      <a class="menu-item">My Resumes</a>
+      <a class="menu-item">My Profile</a>
+      <a class="menu-item">Career Path</a>
+      <a class="menu-item">Skill Builder</a>
+      <a class="menu-item">Job Match</a>
+      <a class="menu-item">Settings</a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <button class="logout">Logout</button>
+    </div>
+  </aside>
+
+  <main class="main-area">
+    <header class="top-cards">
+      <div class="card readiness">
+        <div class="card-border"></div>
+        <div class="card-body">
+          <canvas id="readinessRing" width="120" height="120"></canvas>
+          <div class="card-title">Application Readiness</div>
+          <div class="card-sub">Target: {{ session.get('target_role','Not set') }}</div>
+        </div>
+      </div>
+
+      <div class="card match">
+        <div class="card-border"></div>
+        <div class="card-body">
+          <div class="big-number">75%</div>
+          <div class="card-title">Current Job Match</div>
+          <div class="card-sub">to target</div>
+        </div>
+      </div>
+
+      <div class="card ats">
+        <div class="card-border"></div>
+        <div class="card-body">
+          <div class="big-number">82</div>
+          <div class="card-title">ATS Score</div>
+          <div class="card-sub">latest upload</div>
+        </div>
+      </div>
+    </header>
+
+    <section class="middle-grid">
+      <div class="card chart-card">
+        <div class="card-border"></div>
+        <div class="card-head">
+          <h3>ATS Score Trend</h3>
+          <div class="tags"><span class="tag pos">+15%</span><span class="tag pos">+22%</span></div>
+        </div>
+        <div class="card-content">
+          <canvas id="trendChart"></canvas>
+        </div>
+        <div class="card-actions"><button id="uploadAnalyze" class="btn primary">Upload & Analyze Resume</button></div>
+      </div>
+
+      <div class="card milestones">
+        <div class="card-border"></div>
+        <h3>Career Milestones</h3>
+        <div class="flow"> <span>Current Role</span> <span class="arrow">→</span> <span class="gap">Gap</span> <span class="arrow">→</span> <span>Target Role</span></div>
+        <div class="progress-wrap">
+          <div class="progress">
+            <div class="progress-bar" style="width:45%"></div>
+          </div>
+          <div class="progress-label">45% complete</div>
+        </div>
+        <div class="card-actions"><button class="btn outline">Explore Paths</button></div>
+      </div>
+    </section>
+
+    <section class="bottom-grid">
+      <div class="left-pane">
+        <div class="card profile-summary">
+          <h4>Profile Summary</h4>
+          <p>{{ user.name if user and user.name else 'No profile set' }}</p>
+        </div>
+      </div>
+
+      <div class="right-pane">
+        <div class="card skills">
+          <h4>Actionable Skill Development</h4>
+          <div class="skill-list">
+            <div class="skill">
+              <div class="skill-info"><div class="skill-name">Python</div><div class="skill-meta">Required</div></div>
+              <div class="skill-bar"><div style="width:60%"></div></div>
+            </div>
+            <div class="skill">
+              <div class="skill-info"><div class="skill-name">SQL</div><div class="skill-meta">Recommendations</div></div>
+              <div class="skill-bar"><div style="width:30%"></div></div>
+            </div>
+            <div class="skill">
+              <div class="skill-info"><div class="skill-name">JavaScript</div><div class="skill-meta">Current</div></div>
+              <div class="skill-bar"><div style="width:70%"></div></div>
+            </div>
+          </div>
+          <div class="card-actions"><button class="btn primary">Analyze Skills</button></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="centered-footer">© 2026 RACGS — Built with glass & neon</footer>
+  </main>
+
+  <script src="../static/dashboard_modern.js"></script>
+</body>
+</html>

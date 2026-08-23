@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-root">
+    <aside class="sidebar">
+      <div class="profile">
+        <img class="avatar" src="https://i.pravatar.cc/120?img=12" alt="profile">
+        <div class="username">Sai s2vs</div>
+      </div>
+
+      <nav class="menu">
+        <a class="menu-item active">Dashboard</a>
+        <a class="menu-item">My Resumes</a>
+        <a class="menu-item">My Profile</a>
+        <a class="menu-item">Career Path</a>
+        <a class="menu-item">Skill Builder</a>
+        <a class="menu-item">Job Match</a>
+      </nav>
+
+      <div class="logout-wrap">
+        <button class="logout">Logout</button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <section class="top-cards">
+        <div class="card card-readiness">
+          <div class="card-title">Application Readiness Score</div>
+          <div class="readiness-chart">
+            <canvas id="readinessDoughnut" width="160" height="160"></canvas>
+            <div class="readiness-label">60%</div>
+          </div>
+          <div class="card-sub">Your overall match for target role: IPS</div>
+        </div>
+
+        <div class="card card-match">
+          <div class="card-title">Current Job Match</div>
+          <div class="big-number">0%</div>
+          <div class="card-sub small">to target</div>
+        </div>
+
+        <div class="card card-ats">
+          <div class="card-title">ATS Score</div>
+          <div class="big-number">100</div>
+          <div class="card-sub small">for latest upload</div>
+        </div>
+
+        <div class="card card-milestones">
+          <div class="card-title">Career Milestones</div>
+          <div class="milestone-row"><strong>Current:</strong> IPS</div>
+          <div class="milestone-row"><strong>Gap:</strong> Strategic Leadership</div>
+          <div class="milestone-row"><strong>Target:</strong> Senior PM</div>
+          <button class="btn-primary">Explore Paths</button>
+        </div>
+      </section>
+
+      <section class="mid-grid">
+        <div class="left-col">
+          <div class="section-title">ATS Score Trend</div>
+          <div class="chart-card">
+            <canvas id="atsBarChart"></canvas>
+          </div>
+          <button class="btn-primary outline">Upload & Analyze Resume</button>
+        </div>
+
+        <aside class="right-col">
+          <div class="section-title">Actionable Skill Development</div>
+          <div class="skills-card">
+            <div class="skill-row"><span>node</span><span class="count">1 Item</span></div>
+            <div class="skill-row"><span>api</span><span class="count">1 Item</span></div>
+            <div class="skill-row"><span>docker</span><span class="count">1 Item</span></div>
+            <div class="skill-row"><span>kubernetes</span><span class="count">1 Item</span></div>
+            <div class="skill-row"><span>microservices</span><span class="count">1 Item</span></div>
+          </div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

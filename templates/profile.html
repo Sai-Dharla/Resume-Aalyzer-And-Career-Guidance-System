@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard">
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-profile">
+                <div class="sidebar-photo">
+                    {% if user_profile_image %}
+                    <img id="sidebarProfileImg" src="{{ url_for('static', filename=user_profile_image) }}" alt="Profile Photo" style="cursor: pointer;">
+                    {% else %}
+                    <div id="sidebarProfileImg" class="sidebar-default-photo" style="cursor: pointer;">👤</div>
+                    {% endif %}
+                    <input type="file" id="sidebarUpload" accept="image/*" hidden>
+                </div>
+                <div class="sidebar-name">{{ user.name or 'User' }}</div>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+                <li><a href="{{ url_for('my_resumes') }}"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+                <li><a href="#" class="active"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+                <li><a href="{{ url_for('career_path') }}"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+                <li><a href="{{ url_for('skill_builder') }}"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+                <li><a href="{{ url_for('job_match_page') }}"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>My Profile</h1>
+                <p>Manage your personal information and profile photo</p>
+            </div>
+
+            <div class="dashboard-cards">
+                <div class="dashboard-card profile-card">
+                    <div class="profile-photo" title="Click to change photo" style="cursor: pointer;">
+                        {% if user_profile_image %}
+                        <img id="profileImg" src="{{ url_for('static', filename=user_profile_image) }}" alt="Profile Photo">
+                        {% else %}
+                        <div id="profileImg" class="default-photo">👤</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-details">
+                        <p><strong>Name:</strong> {{ user.name or 'User' }}</p>
+                        <p><strong>Phone:</strong> {{ user.phone or 'Not set' }}</p>
+                        <p><strong>Target Job Role:</strong> {{ user.job_role or 'Not set' }}</p>
+                    </div>
+
+                    <button type="button" class="button-edit" onclick="document.getElementById('form-edit').classList.toggle('hidden')">Edit Profile</button>
+
+                    <form id="form-edit" method="post" enctype="multipart/form-data" class="hidden profile-form">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" value="{{ user.name or '' }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" id="phone" name="phone" value="{{ user.phone or '' }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="job_role">Target Job Role</label>
+                            <input type="text" id="job_role" name="job_role" value="{{ user.job_role or '' }}" required>
+                        </div>
+
+                        <div id="profileForm" style="display:none;">
+                            <input type="file" id="profileUpload" name="profile" accept="image/*" hidden>
+                        </div>
+                        <button type="submit">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="messages" style="margin-top: 20px;">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        // Profile image click -> open file dialog
+        const profileImgEl = document.getElementById('profileImg');
+        if (profileImgEl) {
+            profileImgEl.addEventListener('click', () => document.getElementById('profileUpload').click());
+        }
+
+        // Sidebar profile image click -> open sidebar file dialog
+        const sidebarImgEl = document.getElementById('sidebarProfileImg');
+        if (sidebarImgEl) {
+            sidebarImgEl.addEventListener('click', () => document.getElementById('sidebarUpload').click());
+        }
+
+        // When a file is selected, upload using FormData and update img src with cache-busting
+        document.getElementById('profileUpload').addEventListener('change', async function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('profile', file);
+
+            try {
+                const res = await fetch('/upload-profile', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data && data.image_url) {
+                    const img = document.getElementById('profileImg');
+                    if (img) {
+                        img.src = data.image_url + '?t=' + new Date().getTime();
+                    }
+                    // update sidebar image if present
+                    const sidebar = document.getElementById('sidebarProfileImg');
+                    if (sidebar) {
+                        if (sidebar.tagName.toLowerCase() === 'img') {
+                            sidebar.src = data.image_url + '?t=' + new Date().getTime();
+                        } else {
+                            const imgEl = document.createElement('img');
+                            imgEl.id = 'sidebarProfileImg';
+                            imgEl.src = data.image_url + '?t=' + new Date().getTime();
+                            imgEl.alt = 'Profile Photo';
+                            imgEl.style.cursor = 'pointer';
+                            sidebar.parentNode.replaceChild(imgEl, sidebar);
+                            // bind click to new element
+                            imgEl.addEventListener('click', () => document.getElementById('sidebarUpload').click());
+                        }
+                    }
+                } else {
+                    showMessage((data && data.error) || 'Upload failed', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Error uploading image. Please try again.', 'error');
+            }
+        });
+
+        // Sidebar upload handler (uploads and updates both sidebar and main profile image)
+        document.getElementById('sidebarUpload').addEventListener('change', async function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('profile', file);
+
+            try {
+                const res = await fetch('/upload-profile', { method: 'POST', body: formData });
+                const data = await res.json();
+                if (data && data.image_url) {
+                    // update sidebar
+                    const sidebar = document.getElementById('sidebarProfileImg');
+                    if (sidebar) {
+                        if (sidebar.tagName.toLowerCase() === 'img') {
+                            sidebar.src = data.image_url + '?t=' + Date.now();
+                        } else {
+                            const imgEl = document.createElement('img');
+                            imgEl.id = 'sidebarProfileImg';
+                            imgEl.src = data.image_url + '?t=' + Date.now();
+                            imgEl.alt = 'Profile Photo';
+                            imgEl.style.cursor = 'pointer';
+                            sidebar.parentNode.replaceChild(imgEl, sidebar);
+                            imgEl.addEventListener('click', () => document.getElementById('sidebarUpload').click());
+                        }
+                    }
+
+                    // update main profile image if present
+                    const img = document.getElementById('profileImg');
+                    if (img) img.src = data.image_url + '?t=' + Date.now();
+                } else {
+                    showMessage((data && data.error) || 'Upload failed', 'error');
+                }
+            } catch (err) {
+                console.error(err);
+                showMessage('Error uploading image. Please try again.', 'error');
+            }
+        });
+
+        function showMessage(message, type) {
+            // Remove existing messages
+            const existingMessages = document.querySelectorAll('.upload-message');
+            existingMessages.forEach(msg => msg.remove());
+
+            // Create new message
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `upload-message ${type}`;
+            messageDiv.textContent = message;
+
+            // Add to page
+            const dashboardContent = document.querySelector('.dashboard-content');
+            dashboardContent.insertBefore(messageDiv, dashboardContent.firstChild);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (messageDiv.parentNode) {
+                    messageDiv.remove();
+                }
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

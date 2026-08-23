@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Career Path</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard">
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-profile">
+                <div class="sidebar-photo">
+                    {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}?t={{ user.created_at.timestamp() if user.created_at else '' }}" alt="Profile Photo">
+                    {% else %}
+                    <div class="sidebar-default-photo">👤</div>
+                    {% endif %}
+                </div>
+                <div class="sidebar-name">{{ user.name or 'User' }}</div>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+                <li><a href="{{ url_for('my_resumes') }}"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+                <li><a href="{{ url_for('profile') }}"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+                <li><a href="{{ url_for('career_path') }}" class="active"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+                <li><a href="{{ url_for('skill_builder') }}"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+                <li><a href="{{ url_for('job_match_page') }}"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>Your Career Path</h1>
+                <p>Target Role: <strong>{{ target_role.title() if target_role else 'Not selected' }}</strong> | Missing Skills: <strong>{{ missing_skills|length }}</strong></p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="messages" style="margin-bottom: 20px;">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="dashboard-card ai-feedback-card">
+                <h3>AI Feedback</h3>
+                <p class="ai-feedback-summary">{{ ai_feedback.summary }}</p>
+
+                <div class="ai-feedback-grid">
+                    <div>
+                        <h4>Strengths</h4>
+                        <ul class="ai-feedback-list">
+                            {% if ai_feedback.strengths %}
+                                {% for strength in ai_feedback.strengths %}
+                                <li>{{ strength }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>No strengths detected yet. Add key skills to your resume.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4>Weaknesses</h4>
+                        <ul class="ai-feedback-list">
+                            {% if ai_feedback.weaknesses %}
+                                {% for weakness in ai_feedback.weaknesses %}
+                                <li>{{ weakness }}</li>
+                                {% endfor %}
+                            {% else %}
+                                <li>No major skill gaps found.</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4>Suggestions</h4>
+                        <ul class="ai-feedback-list">
+                            {% for suggestion in ai_feedback.suggestions %}
+                            <li>{{ suggestion }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="career-path-container">
+                {% if roadmap %}
+                    <div class="dashboard-card roadmap-core-message">
+                        <p>Start with these core skills first</p>
+                    </div>
+                    {% for item in roadmap %}
+                    <div class="dashboard-card career-card {% if item.priority == 'High' %}career-card-high{% endif %}">
+                        <div class="career-card-header">
+                            <h3>{{ item.skill.title() }}</h3>
+                            <div class="career-badges">
+                                <span class="priority-badge priority-{{ item.priority|lower }}">{{ item.priority }}</span>
+                                <span class="skill-badge">{{ item.duration }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="career-card-body">
+                            <p><strong>Title:</strong> {{ item.title }}</p>
+                            <p><strong>Duration:</strong> {{ item.duration }}</p>
+                            <p><strong>Priority:</strong> {{ item.priority }}</p>
+                            
+                            <div class="career-section">
+                                <h4>📚 Learning Resources</h4>
+                                <ul class="career-list">
+                                    {% for resource in item.resources %}
+                                    <li>{{ resource }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
+                            <div class="career-section">
+                                <h4>🚀 Project</h4>
+                                <p style="color: #cbd5e0;">{{ item.project }}</p>
+                            </div>
+                        </div>
+
+                        <a href="{{ url_for('skill_builder', skill=item.skill.lower()) }}" class="card-action">Learn {{ item.skill.title() }}</a>
+                    </div>
+                    {% endfor %}
+                {% elif missing_skills|length == 0 %}
+                    <div class="dashboard-card">
+                        <p>You are already well prepared</p>
+                    </div>
+                {% else %}
+                    <div class="dashboard-card">
+                        <p>Roadmap data is not available yet for your current missing skills.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="action-links">
+                <a href="{{ url_for('job_match_page') }}" class="card-action">← Back to Job Match</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+    </script>
+</body>
+</html>

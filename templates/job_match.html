@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Match</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard">
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+
+    <div class="sidebar">
+        <div class="sidebar-top">
+            <div class="sidebar-profile">
+                <div class="sidebar-photo">
+                    {% if user.profile_photo %}
+                    <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}?t={{ user.created_at.timestamp() if user.created_at else '' }}" alt="Profile Photo">
+                    {% else %}
+                    <div class="sidebar-default-photo">👤</div>
+                    {% endif %}
+                </div>
+                <div class="sidebar-name">{{ user.name or 'User' }}</div>
+            </div>
+            <ul>
+                <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+                <li><a href="{{ url_for('my_resumes') }}"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+                <li><a href="{{ url_for('profile') }}"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+                <li><a href="{{ url_for('career_path') }}"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+                <li><a href="{{ url_for('skill_builder') }}"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+                <li><a href="{{ url_for('job_match_page') }}" class="active"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+            </ul>
+        </div>
+        <div class="sidebar-bottom">
+            <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            <div class="dashboard-header">
+                <h1>Job Match</h1>
+                <p>Compare your latest resume against a target role and see skills gaps.</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            <div class="messages" style="margin-bottom: 20px;">
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            </div>
+            {% endif %}
+            {% endwith %}
+
+            <div class="job-match-grid">
+                <div class="dashboard-card job-match-card">
+                    <h3>Check Against Role</h3>
+                    <div class="job-match-form">
+                        <label for="job_role" class="job-match-label">Select job role</label>
+                        <select id="job_role" class="job-match-select">
+                            <option value="">Choose role</option>
+                            {% for role_name in job_roles %}
+                            <option value="{{ role_name }}">{{ role_name.title() }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="button" onclick="analyzeJobMatch()" class="card-action job-match-button">Check</button>
+                    </div>
+                </div>
+
+                <div class="dashboard-card job-match-card">
+                    <h3>Result</h3>
+                    <div id="job_match_result" class="job-match-result">
+                        <p>Choose a role and click Check to see match score and missing skills.</p>
+                    </div>
+                    <div id="job_match_loading" class="job-match-loading" style="display: none;">
+                        <p>Loading...</p>
+                    </div>
+                    <div id="job_match_error" class="job-match-error" style="display: none;">
+                        <p></p>
+                    </div>
+                    <div id="job_match_action" class="job-match-action" style="display: none;">
+                        <a href="{{ url_for('career_path') }}" class="card-action" style="display: inline-block; margin-top: 16px;">View Career Path →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+
+        function analyzeJobMatch() {
+            // Get selected job role
+            const jobRole = document.getElementById('job_role').value;
+
+            // Validate
+            if (!jobRole) {
+                alert('Please select a job role');
+                return;
+            }
+
+            // Show loading state
+            document.getElementById('job_match_result').style.display = 'none';
+            document.getElementById('job_match_error').style.display = 'none';
+            document.getElementById('job_match_action').style.display = 'none';
+            document.getElementById('job_match_loading').style.display = 'block';
+
+            // Send POST request to backend
+            fetch('/analyze-job-match', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    job_role: jobRole
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('job_match_loading').style.display = 'none';
+
+                if (data.success) {
+                    // Update result section with response data
+                    const resultHtml = `
+                        <p><strong>Role:</strong> ${data.role.charAt(0).toUpperCase() + data.role.slice(1)}</p>
+                        <p><strong>Match Score:</strong> ${data.score}%</p>
+                        <div class="job-match-tags">
+                            <strong>Matched Skills:</strong>
+                            <p>${data.matched.length > 0 ? data.matched.join(', ') : 'None found'}</p>
+                        </div>
+                        <div class="job-match-tags">
+                            <strong>Missing Skills:</strong>
+                            <p>${data.missing.length > 0 ? data.missing.join(', ') : 'No missing skills'}</p>
+                        </div>
+                    `;
+                    document.getElementById('job_match_result').innerHTML = resultHtml;
+                    document.getElementById('job_match_result').style.display = 'block';
+                    
+                    // Show action button if there are missing skills
+                    if (data.missing.length > 0) {
+                        document.getElementById('job_match_action').style.display = 'block';
+                    }
+                } else {
+                    // Show error message
+                    document.getElementById('job_match_error').innerHTML = `<p>${data.error}</p>`;
+                    document.getElementById('job_match_error').style.display = 'block';
+                }
+            })
+            .catch(error => {
+                document.getElementById('job_match_loading').style.display = 'none';
+                document.getElementById('job_match_error').innerHTML = `<p>Error: ${error.message}</p>`;
+                document.getElementById('job_match_error').style.display = 'block';
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

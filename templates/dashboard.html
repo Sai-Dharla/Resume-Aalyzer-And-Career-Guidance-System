@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>Dashboard</title>
+            <link rel="stylesheet" href="{{ url_for('static', filename='style_dashboard.css') }}">
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            <style>/* small fallback if style file missing */:root{--fallback:#071127}body{background:var(--fallback)}</style>
+    </head>
+    <body class="dash-root">
+
+        <aside class="sidebar">
+            <div class="profile">
+                {% if user and user.profile_photo %}
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}" alt="profile" class="avatar-img">
+                {% else %}
+                <div class="avatar-text">{{ (user.first_name[0] if user and user.first_name else (user.name[0] if user and user.name else 'U')) }}{{ (user.last_name[0] if user and user.last_name else '') }}</div>
+                {% endif %}
+                <div class="name">{{ user.name if user and user.name else 'User' }}</div>
+            </div>
+
+            <nav class="menu">
+                <a href="{{ url_for('dashboard') }}" class="menu-item active">Dashboard</a>
+                <a href="{{ url_for('my_resumes') }}" class="menu-item">My Resumes</a>
+                <a href="{{ url_for('profile') }}" class="menu-item">My Profile</a>
+                <a href="{{ url_for('career_path') }}" class="menu-item">Career Path</a>
+                <a href="{{ url_for('skill_builder') }}" class="menu-item">Skill Builder</a>
+                <a href="{{ url_for('job_match_page') }}" class="menu-item">Job Match</a>
+                <a href="#" class="menu-item">Settings</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+            </div>
+        </aside>
+
+        <main class="main-area">
+            <header class="top-cards">
+                <div class="card readiness">
+                    <div class="card-border"></div>
+                    <div class="card-body">
+                        <canvas id="readinessRing" width="120" height="120"></canvas>
+                        <div class="card-title">Application Readiness</div>
+                        <div class="card-sub">Target: {{ target_role if target_role else 'No target role selected' }}</div>
+                    </div>
+                </div>
+
+                <!-- Current Job Match card removed per request -->
+
+                <div class="card ats">
+                    <div class="card-border"></div>
+                    <div class="card-body">
+                        <div class="big-number">{{ ats_score or 0 }}</div>
+                        <div class="card-title">ATS Score</div>
+                        <div class="card-sub">latest upload</div>
+                    </div>
+                </div>
+            </header>
+
+            <section class="middle-grid">
+                <div class="card chart-card">
+                    <div class="card-border"></div>
+                    <div class="card-head">
+                        <h3>ATS Score Trend</h3>
+                        <div class="tags"><span class="tag pos">+15%</span><span class="tag pos">+22%</span></div>
+                    </div>
+                    <div class="card-content">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                    {% if not session.get('ats_score') %}
+                    <div class="card-actions"><button id="uploadAnalyze" class="btn primary">Upload & Analyze Resume</button></div>
+                    {% endif %}
+                </div>
+
+                <div class="card milestones">
+                    <div class="card-border"></div>
+                    <h3>Career Milestones</h3>
+                    <div class="flow"> <span>{{ user.job_role or 'Current Role' }}</span> <span class="arrow">→</span> <span class="gap">Gap: Strategic Leadership</span> <span class="arrow">→</span> <span>Target Role</span></div>
+                    <div class="progress-wrap">
+                        <div class="progress">
+                            <div class="progress-bar" style="width:45%"></div>
+                        </div>
+                        <div class="progress-label">45% complete</div>
+                    </div>
+                    <div class="card-actions"><a href="{{ url_for('career_path') }}" class="btn outline">Explore Paths</a></div>
+                </div>
+            </section>
+
+            <section class="bottom-grid">
+                <div class="left-pane">
+                    <div class="card profile-summary">
+                        <h4>Profile Summary</h4>
+                        {% set role_label = (target_role.title() if target_role else (user.job_role.title() if user and user.job_role else 'Professional')) %}
+                        <p>{{ user.name if user and user.name else 'User' }} — Aspiring {{ role_label }} with ATS score of {{ ats_score }}%</p>
+                    </div>
+                </div>
+
+                <div class="right-pane">
+                    <div class="card skills">
+                        <h4>Actionable Skill Development</h4>
+                        <div class="skill-list">
+                            {% for skill in (missing_skills or [])[:5] %}
+                            <div class="skill">
+                                <div class="skill-info"><div class="skill-name">{{ skill }}</div><div class="skill-meta">Required</div></div>
+                                <div class="skill-bar"><div style="width:40%"></div></div>
+                            </div>
+                            {% else %}
+                            <div class="skill">No missing skills detected</div>
+                            {% endfor %}
+                        </div>
+                        <div class="card-actions"><a href="{{ url_for('skill_builder') }}" class="btn primary">Analyze Skills</a></div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="centered-footer">© 2026 RACGS — Built with glass & neon</footer>
+        </main>
+
+        <script src="{{ url_for('static', filename='dashboard_modern.js') }}"></script>
+        <script>
+            // initialize charts with server-provided values
+            document.addEventListener('DOMContentLoaded', function(){
+                // readiness value from session/app_readiness
+                const readiness = Number({{ app_readiness or 0 }});
+                const readinessCtx = document.getElementById('readinessRing').getContext('2d');
+                new Chart(readinessCtx, {type:'doughnut',data:{datasets:[{data:[readiness,100-readiness],backgroundColor:['#10b981','rgba(255,255,255,0.06)'],borderWidth:0}]},options:{cutout:'72%',responsive:false,plugins:{legend:{display:false},tooltip:{enabled:false}}}});
+
+                // pass sample data to trend chart via JS file (it will init)
+            });
+        </script>
+    </body>
+    </html>

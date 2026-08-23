@@ -1,0 +1,50 @@
+{
+  "programming_languages": [
+    "Python", "Java", "JavaScript", "C++", "C#", "PHP", "Ruby", "Go", "Rust",
+    "TypeScript", "R", "MATLAB", "Kotlin", "Swift", "Objective-C", "Scala",
+    "Perl", "Lua", "Haskell", "Clojure"
+  ],
+  "web_development": [
+    "HTML", "CSS", "React", "Angular", "Vue.js", "Node.js", "Express",
+    "Flask", "Django", "ASP.NET", "Spring", "Rails", "Laravel", "Symfony",
+    "Next.js", "NuxtJS", "Svelte", "Bootstrap", "Material UI", "Tailwind CSS"
+  ],
+  "databases": [
+    "SQL", "MySQL", "PostgreSQL", "MongoDB", "Redis", "Oracle", "SQLite",
+    "Cassandra", "Elasticsearch", "Firebase", "DynamoDB", "Neo4j", "MariaDB",
+    "CouchDB", "Memcached", "Solr"
+  ],
+  "cloud_devops": [
+    "AWS", "Azure", "Google Cloud", "Docker", "Kubernetes", "CI/CD",
+    "Jenkins", "GitLab CI", "GitHub Actions", "Terraform", "CloudFormation",
+    "Ansible", "Puppet", "Chef", "Prometheus", "Grafana", "ELK Stack",
+    "New Relic", "DataDog", "Linux", "SSH", "Nginx", "Apache"
+  ],
+  "data_science": [
+    "Machine Learning", "Deep Learning", "TensorFlow", "PyTorch",
+    "Pandas", "NumPy", "Scikit-learn", "Data Analysis", "Statistics",
+    "Computer Vision", "NLP", "Keras", "XGBoost", "Spark", "Hadoop",
+    "Tableau", "Power BI", "Data Visualization"
+  ],
+  "mobile_development": [
+    "iOS", "Android", "React Native", "Flutter", "Swift", "Kotlin",
+    "Java Mobile", "Objective-C", "Xamarin", "Cordova", "Ionic",
+    "Mobile UI/UX", "REST API", "Firebase Mobile"
+  ],
+  "tools_frameworks": [
+    "Git", "REST API", "GraphQL", "JSON", "XML", "YAML", "Webpack",
+    "Babel", "Linting", "Testing Frameworks", "JWT", "OAuth", "SOLID",
+    "Design Patterns", "MVC", "Microservices"
+  ],
+  "soft_skills": [
+    "Communication", "Leadership", "Problem Solving", "Teamwork",
+    "Project Management", "Analytical Thinking", "Critical Thinking",
+    "Time Management", "Collaboration", "Presentation", "Documentation",
+    "Mentoring", "Agile", "Scrum"
+  ],
+  "specializations": [
+    "Architecture", "Cybersecurity", "DevSecOps", "Site Reliability Engineering",
+    "Database Design", "System Design", "API Design", "Scalability",
+    "Performance Optimization", "Cloud Architecture", "Enterprise Systems"
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "python": {
+    "title": "Learn Python Programming",
+    "duration": "3 weeks",
+    "priority": "High",
+    "resources": [
+      "W3Schools Python Tutorial",
+      "Python for Everybody (Coursera)",
+      "YouTube Python Course by freeCodeCamp"
+    ],
+    "project": "Build a command-line expense tracker"
+  },
+  "sql": {
+    "title": "Master SQL Basics",
+    "duration": "2 weeks",
+    "priority": "High",
+    "resources": [
+      "W3Schools SQL",
+      "Khan Academy Intro to SQL",
+      "LeetCode SQL Study Plan"
+    ],
+    "project": "Build a simple student database with CRUD queries"
+  },
+  "node": {
+    "title": "Build Backends with Node.js",
+    "duration": "3 weeks",
+    "priority": "Medium",
+    "resources": [
+      "Node.js Official Getting Started",
+      "The Odin Project NodeJS Path",
+      "freeCodeCamp Node and Express"
+    ],
+    "project": "Create a notes API using Node and Express"
+  },
+  "api": {
+    "title": "Learn API Development Fundamentals",
+    "duration": "2 weeks",
+    "priority": "High",
+    "resources": [
+      "Postman API Fundamentals",
+      "MDN Web APIs Guide",
+      "REST API Tutorial"
+    ],
+    "project": "Build a REST API for a to-do application"
+  },
+  "docker": {
+    "title": "Get Started with Docker",
+    "duration": "2 weeks",
+    "priority": "Medium",
+    "resources": [
+      "Docker Official Tutorial",
+      "Play with Docker Labs",
+      "Docker Curriculum"
+    ],
+    "project": "Containerize a Flask or Node app with Dockerfile and Compose"
+  },
+  "kubernetes": {
+    "title": "Understand Kubernetes Essentials",
+    "duration": "3 weeks",
+    "priority": "Low",
+    "resources": [
+      "Kubernetes Basics by Kubernetes.io",
+      "KodeKloud Kubernetes for Beginners",
+      "YouTube Kubernetes Course"
+    ],
+    "project": "Deploy a containerized app to Minikube with Service and Deployment"
+  },
+  "microservices": {
+    "title": "Introduction to Microservices Architecture",
+    "duration": "3 weeks",
+    "priority": "Low",
+    "resources": [
+      "Microservices.io Patterns",
+      "Martin Fowler Microservices Guide",
+      "freeCodeCamp Microservices Course"
+    ],
+    "project": "Split a monolith into 2 small services with separate APIs"
+  },
+  "react": {
+    "title": "Build Modern UIs with React",
+    "duration": "3 weeks",
+    "priority": "Medium",
+    "resources": [
+      "React Official Learn Docs",
+      "Scrimba Learn React",
+      "freeCodeCamp Front End Libraries"
+    ],
+    "project": "Build a task management dashboard with React components"
+  },
+  "javascript": {
+    "title": "Master JavaScript Fundamentals",
+    "duration": "3 weeks",
+    "priority": "High",
+    "resources": [
+      "JavaScript.info",
+      "MDN JavaScript Guide",
+      "freeCodeCamp JavaScript Algorithms"
+    ],
+    "project": "Build an interactive quiz app with score tracking"
+  },
+  "machine learning": {
+    "title": "Machine Learning for Beginners",
+    "duration": "4 weeks",
+    "priority": "Medium",
+    "resources": [
+      "Google Machine Learning Crash Course",
+      "Kaggle Intro to Machine Learning",
+      "Andrew Ng ML Specialization"
+    ],
+    "project": "Train a basic model to predict house prices"
+  },
+  "statistics": {
+    "title": "Statistics Essentials for Data Work",
+    "duration": "3 weeks",
+    "priority": "Medium",
+    "resources": [
+      "Khan Academy Statistics and Probability",
+      "StatQuest YouTube Channel",
+      "OpenIntro Statistics"
+    ],
+    "project": "Analyze a public dataset and summarize key trends with charts"
+  }
+}

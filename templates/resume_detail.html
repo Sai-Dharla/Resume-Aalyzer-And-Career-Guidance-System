@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Details - {{ resume.original_file_name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .resume-detail-container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .resume-detail-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .resume-detail-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .resume-detail-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background-color: #545b62;
+        }
+
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .resume-detail-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .meta-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .resume-text-section {
+            margin-top: 30px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* IMPORTANT: white-space: pre-wrap preserves formatting from extracted text */
+        .resume-text-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #dee2e6;
+            max-height: 800px;
+            overflow-y: auto;
+            white-space: pre-wrap;      /* Preserve line breaks and spaces */
+            word-wrap: break-word;       /* Break long words */
+            color: #333;
+            line-height: 1.8;
+            font-size: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .resume-detail-container {
+                padding: 20px;
+            }
+
+            .resume-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .resume-detail-actions {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+            }
+
+            .resume-detail-meta {
+                grid-template-columns: 1fr;
+            }
+
+            .resume-text-content {
+                max-height: 400px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body class="dashboard">
+    <!-- Mobile menu icon -->
+    <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+    
+    <!-- Sidebar Navigation -->
+    <div class="sidebar">
+        <div class="sidebar-profile">
+            <div class="sidebar-photo">
+                {% if user.profile_photo %}
+                <img src="{{ url_for('static', filename='uploads/' + user.profile_photo) }}?t={{ user.created_at.timestamp() if user.created_at else '' }}" alt="Profile Photo">
+                {% else %}
+                <div class="sidebar-default-photo">👤</div>
+                {% endif %}
+            </div>
+            <div class="sidebar-name">{{ user.name or 'User' }}</div>
+        </div>
+        <ul>
+            <li><a href="{{ url_for('dashboard') }}"><span class="icon">📊</span><span class="text">Dashboard</span></a></li>
+            <li><a href="{{ url_for('my_resumes') }}" class="active"><span class="icon">📄</span><span class="text">My Resumes</span></a></li>
+            <li><a href="{{ url_for('profile') }}"><span class="icon">👤</span><span class="text">My Profile</span></a></li>
+            <li><a href="{{ url_for('career_path') }}"><span class="icon">🛤️</span><span class="text">Career Path</span></a></li>
+            <li><a href="{{ url_for('skill_builder') }}"><span class="icon">🎯</span><span class="text">Skill Builder</span></a></li>
+            <li><a href="{{ url_for('job_match_page') }}"><span class="icon">🔍</span><span class="text">Job Match</span></a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="main-content">
+        <div class="desktop-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="dashboard-content">
+            <!-- Back Link -->
+            <a href="{{ url_for('my_resumes') }}" class="back-link">← Back to My Resumes</a>
+
+            <!-- Resume Detail Section -->
+            <div class="resume-detail-container">
+                <div class="resume-detail-header">
+                    <div class="resume-detail-title">
+                        📄 {{ resume.original_file_name }}
+                    </div>
+                    <div class="resume-detail-actions">
+                        <a href="{{ url_for('my_resumes') }}" class="btn btn-back">← Back</a>
+                        <button 
+                            class="btn btn-delete" 
+                            onclick="deleteResume({{ resume.id }})"
+                        >
+                            🗑️ Delete Resume
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Resume Metadata -->
+                <div class="resume-detail-meta">
+                    <div class="meta-item">
+                        <span class="meta-label">📅 Upload Date</span>
+                        <span class="meta-value">{{ resume.upload_date.strftime('%B %d, %Y') }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">⏰ Upload Time</span>
+                        <span class="meta-value">{{ resume.upload_date.strftime('%H:%M %p') }}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">💾 File Size</span>
+                        <span class="meta-value">
+                            {% if resume.file_size >= 1024*1024 %}
+                                {{ "%.2f"|format(resume.file_size / 1024 / 1024) }} MB
+                            {% else %}
+                                {{ "%.2f"|format(resume.file_size / 1024) }} KB
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">📝 Text Length</span>
+                        <span class="meta-value">{{ resume.extracted_text|length }} characters</span>
+                    </div>
+                </div>
+
+                <!-- Extracted Text Section -->
+                <div class="resume-text-section">
+                    <h2 class="section-title">📖 Extracted Resume Text</h2>
+                    <div class="resume-text-content">{{ resume.extracted_text }}</div>
+                </div>
+
+                <!-- Job Match Section -->
+                <div class="resume-text-section" style="margin-top: 25px;">
+                    <h2 class="section-title">🎯 Job Match</h2>
+                    <form method="post" action="{{ url_for('view_resume', resume_id=resume.id)}}">
+                        <label for="job_role">Select a Job Role:</label>
+                        <select name="job_role" id="job_role" required style="margin-left: 10px; padding: 4px 8px;">
+                            <option value="">-- Choose role --</option>
+                            {% for role_name in JOB_ROLES.keys() %}
+                            <option value="{{ role_name }}" {% if selected_role == role_name %}selected{% endif %}>{{ role_name.title() }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn" style="background:#2d3748;color:white;margin-left:12px;">Check Match</button>
+                    </form>
+
+                    {% if job_match %}
+                    <div style="margin-top: 15px; padding: 10px; background: #f1f5f9; border-radius: 7px;">
+                        <p><strong>Role:</strong> {{ job_match.role.title() }}</p>
+                        <p><strong>Match %:</strong> {{ job_match.match_pct }}%</p>
+                        <p><strong>Matched Skills:</strong> {{ job_match.matched_skills|join(', ') or 'None' }}</p>
+                        <p><strong>Missing Skills:</strong> {{ job_match.missing_skills|join(', ') or 'None' }}</p>
+                        <p><strong>Recommended Role Skills:</strong> {{ job_match.required_skills|join(', ') }}</p>
+                        <p><strong>Resume Skills Extracted:</strong> {{ resume_skills|join(', ') or 'None' }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Logout Link -->
+            <a href="{{ url_for('logout') }}" class="logout-link">Logout</a>
+        </div>
+    </div>
+
+    <!-- JavaScript for Resume Management -->
+    <script>
+        /**
+         * Delete Resume
+         * Removes a resume from the database
+         * @param {number} resumeId - The ID of the resume to delete
+         */
+        function deleteResume(resumeId) {
+            // Confirm before deleting
+            if (!confirm('Are you sure you want to delete this resume? This action cannot be undone.')) {
+                return;
+            }
+
+            // Send delete request to backend
+            fetch(`/delete_resume/${resumeId}`, {
+                method: 'POST'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Show success message and redirect
+                    alert('✅ Resume deleted successfully');
+                    window.location.href = '{{ url_for("my_resumes") }}';
+                } else {
+                    // Show error message
+                    alert(`❌ Error: ${data.error}`);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('❌ Error deleting resume');
+            });
+        }
+
+        /**
+         * Toggle Sidebar (Mobile Responsive)
+         * Shows/hides the sidebar on mobile devices
+         */
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            if (window.innerWidth < 768) {
+                sidebar.classList.toggle('open');
+            } else {
+                sidebar.classList.toggle('collapsed');
+            }
+        }
+    </script>
+</body>
+</html>
