@@ -36,25 +36,6 @@
 
  The reusable modules in `core/` provide broader analysis capabilities. The Flask routes primarily use the simpler, route-level workflow in `app.py`; the `RACSSystem` orchestration layer in `main.py` is separate from the active web route flow.
 
- ## Screenshots
- ### Login
-![RACGS Login](screenshots/Login_page.png)
-
-### Dashboard
-![RACGS Dashboard](screenshots/Dashboard.png)
-
-### Resume Analysis
-![RACGS Resume Analysis](screenshots/Resume_analyzer.png)
-
-### Job Matching
-![RACGS Job Matching](screenshots/Job_match.png)
-
-### Career Guidance
-![RACGS Career Guidance](screenshots/Career_path.png)
-
-### Profile
-![RACGS Profile](screenshots/My_profile.png)
-
  ## Technology Stack
 
  ### Backend
@@ -263,3 +244,21 @@
  ## Author
 
  Saibabu Dharla
+ ## Screenshots
+ ### Login
+![RACGS Login](screenshots/Login_page.png)
+
+### Dashboard
+![RACGS Dashboard](screenshots/Dashboard.png)
+
+### Resume Analysis
+![RACGS Resume Analysis](screenshots/Resume_analyzer.png)
+
+### Job Matching
+![RACGS Job Matching](screenshots/Job_match.png)
+
+### Career Guidance
+![RACGS Career Guidance](screenshots/Career_path.png)
+
+### Profile
+![RACGS Profile](screenshots/My_profile.png)
