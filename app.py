@@ -3,10 +3,14 @@ Flask Resume Analyzer and Career Guidance System
 With SQLite Database for Persistent Data Storage
 """
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
 import smtplib
-import os
 import random
 import time
 import traceback
@@ -16,7 +20,6 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from PyPDF2 import PdfReader
 from docx import Document
-import os
 from datetime import datetime
 import json
 from sqlalchemy import inspect, text
@@ -25,8 +28,10 @@ from sqlalchemy import inspect, text
 
 app = Flask(__name__)
 
-# Secret key for session management (change this in production!)
-app.secret_key = 'your_secret_key_change_this_in_production'
+# Secret key for session management - must be set via environment variable
+app.secret_key = os.environ.get('SECRET_KEY')
+if not app.secret_key:
+    raise ValueError("SECRET_KEY environment variable is required. Set it before running the application.")
 
 # Database configuration
 # Using SQLite (simple file-based database)
@@ -52,9 +57,14 @@ serializer = URLSafeTimedSerializer(app.secret_key)
 
 
 def send_otp_email(to_email: str, otp: str) -> bool:
-    # Use environment variables for credentials but fall back to placeholder
-    sender_email = os.environ.get('GMAIL_SMTP_USER') or 'yourgmail@gmail.com'
-    app_password = os.environ.get('GMAIL_SMTP_PASS') or 'your_16_digit_app_password'
+    # Get SMTP credentials from environment variables
+    sender_email = os.environ.get('GMAIL_SMTP_USER')
+    app_password = os.environ.get('GMAIL_SMTP_PASS')
+    
+    # If credentials are not configured, log and return False gracefully
+    if not sender_email or not app_password:
+        app.logger.warning('Email OTP requested but GMAIL_SMTP_USER/GMAIL_SMTP_PASS not configured')
+        return False
 
     msg = MIMEText(f'Your OTP is: {otp}')
     msg['Subject'] = 'RACGS OTP'

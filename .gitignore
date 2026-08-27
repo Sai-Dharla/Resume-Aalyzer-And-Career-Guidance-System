@@ -1,3 +1,29 @@
-.venv/
+# Environment variables
+.env
+.env.*
+
+# Database files
+app.db
+*.db
+*.sqlite
+*.sqlite3
+
+# User uploaded files
+uploads/
+
+# Backup files
+revert_*/
+*.bak
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
